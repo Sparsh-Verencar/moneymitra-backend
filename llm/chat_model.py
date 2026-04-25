@@ -1,32 +1,33 @@
 from dotenv import load_dotenv
-import os
 from langchain.chat_models import init_chat_model
-from system_prompt import financial_prompt
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from system_prompt import SYSTEM_PROMPT
+
 load_dotenv()
 
 model = init_chat_model("google_genai:gemini-2.5-flash-lite")
 
-user_profile = {
-    "first_name": "Rahul",
-    "age": 28,
-    "caste_category": "General",
-    "employment_type": "Salaried",
-    "income_range": "30,000-50,000",
-    "dependents": 2,
-    "state": "Maharashtra"
-}
+messages = [SystemMessage(content=SYSTEM_PROMPT)]
 
-chain = financial_prompt | model
+def chat(user_input: str) -> str:
+    messages.append(HumanMessage(content=user_input))
+    response = model.invoke(messages)
+    messages.append(AIMessage(content=response.content))
+    return response.content
 
-response = chain.invoke({
-    "first_name": user_profile["first_name"],
-    "age": user_profile["age"],
-    "caste_category": user_profile["caste_category"],
-    "employment_type": user_profile["employment_type"],
-    "income_range": user_profile["income_range"],
-    "dependents": user_profile["dependents"],
-    "state": user_profile["state"],
-    "user_query": "What's the best way to save for retirement?"
-})
+def main():
+    print("=== Financial Planning Assistant ===\n")
+    
+    while True:
+        user_input = input("You: ").strip()
+        if not user_input:
+            continue
+        if user_input.lower() in ["exit", "quit"]:
+            print("Goodbye!")
+            break
+        
+        response = chat(user_input)
+        print(f"\nAI: {response}\n")
 
-print("RESPONSE:", response.content)
+if __name__ == "__main__":
+    main()
