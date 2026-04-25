@@ -1,13 +1,22 @@
 from dotenv import load_dotenv
 import os
 from langchain.chat_models import init_chat_model
-from langchain_core.prompts import ChatPromptTemplate
-
+from system_prompt import financial_prompt
 load_dotenv()
 
 model = init_chat_model("google_genai:gemini-2.5-flash-lite")
 
-chain = prompt | model
+user_profile = {
+    "first_name": "Rahul",
+    "age": 28,
+    "caste_category": "General",
+    "employment_type": "Salaried",
+    "income_range": "30,000-50,000",
+    "dependents": 2,
+    "state": "Maharashtra"
+}
+
+chain = financial_prompt | model
 
 response = chain.invoke({
     "first_name": user_profile["first_name"],
