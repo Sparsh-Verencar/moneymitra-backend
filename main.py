@@ -19,6 +19,7 @@ app.include_router(tax.router, prefix="/analyze-tax", tags=["Tax"])
 app.include_router(quiz.router, prefix="/quiz", tags=["Quiz"])
 app.include_router(learning_chat_router, prefix="/learning/chat")
 
+
 @app.get("/")
 def read_root():
     return {"message": "Hello World"}
