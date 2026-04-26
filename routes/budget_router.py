@@ -9,9 +9,9 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from groq import Groq
 
-load_dotenv()
+load_dotenv(override=True)
 
-client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 router = APIRouter()
 
 sessions: Dict[str, Dict[str, Any]] = {}
